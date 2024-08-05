@@ -1,0 +1,23 @@
+[
+    {
+        "index": 1,
+        "pubkey": "83750920ac06c94cf15163ecc2798e4034d19a880292d78e7e58d617499a053f0844042442022852f8147a430da8c32a",
+        "state": "active_ongoing",
+        "withdrawal_credentials": "00a6bc2930b1afff884e341db2ec8547a4087dadb94c2691687b9fdaba3fef94",
+        "deposit_address": "0xd4ecB05559d1CBa877d0e9dA8dA3069836E6e1F4"
+    },
+    {
+        "index": 2,
+        "pubkey": "8dc7464425cbb16cf561fc29d07fc19d3bc66e94cea7da03c4406244729bc1f3f9e4bc1ade916e74f8a0e746e4baad8d",
+        "state": "active_ongoing",
+        "withdrawal_credentials": "00ef75a51b93e456e62af594823e2eeeb4a734df829723092b8b290fbecc1af0",
+        "deposit_address": "0xd4ecB05559d1CBa877d0e9dA8dA3069836E6e1F4"
+    },
+    {
+        "index": 3,
+        "pubkey": "acdee6d57769262db55578c4fafdf64fd196ab31fa1088483258063f4352eea5348b5df225707bc52eee671ec2402c55",
+        "state": "active_ongoing",
+        "withdrawal_credentials": "008d8cecdfcc4c51e67e7249508baf73d938441066a8fc7285ea27a102fe5472",
+        "deposit_address": "0xd4ecB05559d1CBa877d0e9dA8dA3069836E6e1F4"
+    }
+]

@@ -1,0 +1,66 @@
+name: Verify signatures in pull request
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify-signatures:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Get all changed files outside of signatures
+        id: changed-parent
+        uses: tj-actions/changed-files@v35.4.4
+        with:
+          files_ignore: |
+            signatures/*
+
+      - name: Get Changed Signatures
+        id: changed-signatures
+        uses: tj-actions/changed-files@v35.4.4
+        with:
+          files: signatures/*
+          match_directories: false
+
+      - name: Error on modified and deleted validators, or outside files
+        if: ${{ (steps.changed-signatures.outputs.all_changed_and_modified_files != steps.changed-signatures.outputs.added_files) || (steps.changed-parent.outputs.any_modified == 'true' && github.actor != 'valefar-on-discord') }}
+        run: |
+          echo "No modifications/deletions/external changes allowed"
+          echo "Submitter: ${{github.actor}}"
+          echo "Changes: ${{steps.changed-signatures.outputs.all_changed_and_modified_files}}"
+          exit 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install jq
+        if: steps.changed-signatures.outputs.any_changed == 'true'
+        run: sudo apt-get install -y jq
+
+      - name: Verify Signatures
+        if: steps.changed-signatures.outputs.any_changed == 'true'
+        run: |
+          cd $GITHUB_WORKSPACE
+          for file in ${{ steps.changed-signatures.outputs.all_changed_files }}; do
+            echo "Verifying signature $file"
+            echo "Ensure the validator index matches the filename"
+            filename=$(basename -- "$file")
+            index="${filename%.*}"
+            extension="${filename##*.}"
+            cat $GITHUB_WORKSPACE/signatures/${index}.json | jq -e ".validator_index==${index}"
+            echo "Ensure the signatures are valid"
+            python $GITHUB_WORKSPACE/verify_signatures.py ./signatures/${index}.json
+          done
