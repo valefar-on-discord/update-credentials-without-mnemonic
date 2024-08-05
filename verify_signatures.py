@@ -4,7 +4,7 @@ import sys
 from verify_deposit_signature import verify_deposit_signature
 from verify_keystore_signature import validate_bls_to_execution_change_keystore
 
-validator_file = "./test_validators.json"
+validator_file = "./unset_validators.json"
 
 def verify_json(json_file):
     try:
@@ -14,11 +14,13 @@ def verify_json(json_file):
         with open(json_file, 'r') as f:
             data = json.load(f)
 
+        # grab contents from signature file
         to_execution_address = data.get("to_execution_address")
         validator_index = data.get("validator_index")
         deposit_signature = data.get("deposit_signature")
         keystore_signature = data.get("keystore_signature")
 
+        # search for validator by index and grab contents
         validator_data = next(filter(lambda item: item.get("index") == validator_index, validators), None)
 
         if validator_data == None:
@@ -26,6 +28,8 @@ def verify_json(json_file):
             return False
 
         deposit_address = validator_data.get("deposit_address")
+        validator_pubkey = validator_data.get("pubkey")
+
 
         valid_deposit_signature = verify_deposit_signature(
             message=f'{{"to_execution_address":"{to_execution_address}","validator_index":{validator_index}}}',
@@ -37,7 +41,6 @@ def verify_json(json_file):
             print("Invalid deposit signature")
             return False
 
-        validator_pubkey = validator_data.get("pubkey")
 
         valid_keystore_signature = validate_bls_to_execution_change_keystore(
           validator_index=validator_index,
@@ -63,6 +66,6 @@ def verify_json(json_file):
 if __name__ == "__main__":
     json_file = sys.argv[1]
     if verify_json(json_file):
-        sys.exit(0)  # Success
+        sys.exit(0)
     else:
-        sys.exit(1)  # Failure
+        sys.exit(1)
