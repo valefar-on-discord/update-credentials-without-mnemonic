@@ -5,7 +5,10 @@ Validator claiming process to update withdrawal credentials without mnemonic
 
 - Grab [bls_change_with_keystore branch](https://github.com/valefar-on-discord/ethstaker-deposit-cli/tree/bls_change_with_keystore)
 - Follow setup instructions
-- Run `generate-bls-to-execution-change-keystore`
+- Run `generate-bls-to-execution-change-keystore` command such as
+```
+python -m ethstaker_deposit generate-bls-to-execution-change-keystore --keystore=PATH_TO_FILE
+```
 - This will output a `bls_to_execution_change_keystore_transaction-*-*.json` file in the `bls_to_execution_changes_keystore` directory
 - You will need the `signature` value later
 
