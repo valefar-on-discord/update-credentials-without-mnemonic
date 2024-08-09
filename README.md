@@ -1,7 +1,7 @@
 # update-credentials-without-mnemonic
 Validator claiming process to update withdrawal credentials without mnemonic
 
-## Create Keystore signature
+## Step 1: Create Keystore signature
 
 - Grab [bls_change_with_keystore branch](https://github.com/valefar-on-discord/ethstaker-deposit-cli/tree/bls_change_with_keystore)
 - Follow setup instructions
@@ -10,23 +10,25 @@ Validator claiming process to update withdrawal credentials without mnemonic
 python -m ethstaker_deposit generate-bls-to-execution-change-keystore --keystore=PATH_TO_FILE
 ```
 - This will output a `bls_to_execution_change_keystore_transaction-*-*.json` file in the `bls_to_execution_changes_keystore` directory
-- You will need the `signature` value later
+- You will need the `signature` value from the created `bls_to_execution_change_keystore_transaction-*-*.json` for step 3.
 
 
-## Create Deposit signature
+## Step 2: Create Deposit signature
 
 - Go to [Etherscan Verified Signatures](https://etherscan.io/verifiedSignatures)
 - Click on `Sign Message`
 - Make sure to select the account you originally deposited from
-- For message, provider a version similar to `Signature message format` described below
-- You will need the `Signature Hash` value
+- For message, provide a version similar to `Signature message format` described below. Please note that the file must not contain any spaces (or other formatting) as this will result in a different signature.
+- You will need the `Signature Hash` value for step 3.
 
 
-## Create signature json file
+## Step 3: Create signature json file
 
 - After creating signatures, create a json file using the validator index as the name such as `5426.json`
 - Put this file in the `signatures` folder
 - Review the `Signature file format` section below for the contents of the file
+- Use the returned Signature Hash from step 2 for the deposit_signature.
+- Use the signature created in step 1 for the keystore_signature
 - Create a pull request where the signatures will be manually verified
 
 
@@ -54,7 +56,7 @@ As an example:
 ```
 
 
-## Signature message format
+## Signature message format (ensure that it does not contain spaces or other formatting like newlines)
 ```
 {"to_execution_address":"${to_execution_address}","validator_index":${validator_index}}
 ```
