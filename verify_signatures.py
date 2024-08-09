@@ -20,6 +20,15 @@ def verify_json(json_file):
         deposit_signature = data.get("deposit_signature")
         keystore_signature = data.get("keystore_signature")
 
+        # Validator 0 has 0x01 credentials so this won't accidentally trigger
+        if not validator_index:
+            print("Missing validator index")
+            return False
+
+        if not to_execution_address:
+            print("Missing desired execution address")
+            return False
+
         # search for validator by index and grab contents
         validator_data = next(filter(lambda item: item.get("index") == validator_index, validators), None)
 
@@ -30,18 +39,11 @@ def verify_json(json_file):
         deposit_address = validator_data.get("deposit_address")
         validator_pubkey = validator_data.get("pubkey")
 
-
-        valid_deposit_signature = verify_deposit_signature(
-            message=f'{{"to_execution_address":"{to_execution_address}","validator_index":{validator_index}}}',
-            signature=deposit_signature,
-            signer_address=deposit_address
-        )
-
-        if not valid_deposit_signature:
-            print("Invalid deposit signature")
+        if not keystore_signature:
+            print("Missing keystore signature")
             return False
 
-
+        # Verify keystore signature first as the deposit signature may not exist
         valid_keystore_signature = validate_bls_to_execution_change_keystore(
           validator_index=validator_index,
           to_execution_address=to_execution_address,
@@ -51,6 +53,20 @@ def verify_json(json_file):
 
         if not valid_keystore_signature:
             print("Invalid keystore signature")
+            return False
+
+        if not deposit_signature:
+            print("Missing deposit signature")
+            return False
+
+        valid_deposit_signature = verify_deposit_signature(
+            message=f'{{"to_execution_address":"{to_execution_address}","validator_index":{validator_index}}}',
+            signature=deposit_signature,
+            signer_address=deposit_address
+        )
+
+        if not valid_deposit_signature:
+            print("Invalid deposit signature")
             return False
 
         print("Valid signatures")
