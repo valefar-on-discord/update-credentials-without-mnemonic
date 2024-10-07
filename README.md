@@ -1,19 +1,22 @@
 # update-credentials-without-mnemonic
 
-A group of individuals lost access to their mnemonic before it was possible to update validator withdrawal credentials. As a result, these individuals are now faced with a situation where their original deposit and consensus rewards are permanently locked due to the complexity of the process.
+A number of individuals lost access to their mnemonic before it was possible to update validator withdrawal credentials. As a result, these individuals are now faced with a situation where their original deposit and consensus rewards are permanently locked. Even though there were ample warnings about the importance of the mnemonic, many agree that the users should not be considered at fault due to the complexity of the process.
 
 This proposal suggests employing a mechanism similar to [CLWP](https://github.com/benjaminchodroff/ConsensusLayerWithdrawalProtection) to verify validator ownership through a signature from the deposit address and validator keystore. After creating a curated list and allowing an extended period for verification, the credentials could potentially be updated through a hard fork.
 
 If you are one such individual please follow the instructions below to claim your validator with the desired withdrawal address.
 
+If you have any questions or concerns, please reach out to use at the [EthStaker Discord](https://discord.com/invite/ethstaker).
+
+*Note:* This is only a proposal and no assurances or guarantees are made. But we are dedicated to doing all we can to help those impacted by this issue.
+
 
 ## Step 1: Create Keystore signature
 
-- Pull down [bls_change_with_keystore branch](https://github.com/valefar-on-discord/ethstaker-deposit-cli/tree/bls_change_with_keystore) to run locally, preferably in an offline environment
-- Follow setup instructions
-- Run the `generate-bls-to-execution-change-keystore` command
+- Download the latest version of [ethstaker-deposit-cli](https://github.com/eth-educators/ethstaker-deposit-cli/tags), at least v0.1.3
+- Follow instructions on how to run the [generate-bls-to-execution-change-keystore command](https://deposit-cli.ethstaker.cc/generate_bls_to_execution_change_keystore.html)
 ```
-python -m ethstaker_deposit generate-bls-to-execution-change-keystore --keystore=PATH_TO_FILE
+./deposit generate-bls-to-execution-change --keystore=PATH_TO_FILE
 ```
 - This will output a `bls_to_execution_change_keystore_transaction-*-*.json` file in the `bls_to_execution_changes_keystore` directory
 - You will need the `signature` value from the created `bls_to_execution_change_keystore_transaction-*-*.json` for step 3
@@ -21,14 +24,14 @@ python -m ethstaker_deposit generate-bls-to-execution-change-keystore --keystore
 
 ## Step 2: Create Deposit signature
 
-<div style="border: 1px solid #e74c3c; padding: 10px; background-color: #d9534f;">
+<div>
   <strong>⚠️ Alert:</strong> If you're unable to create a signature for your deposit address, for instance, if you used a centralized exchange, you'll need to undergo a manual proof of ownership process for that address. Please still submit a pull request with the keystore signature and you will be contacted for further steps
 </div>
 
 - Go to [Etherscan Verified Signatures](https://etherscan.io/verifiedSignatures)
 - Click on `Sign Message`
 - Make sure to select the account you originally deposited from
-- For message, provide a version similar to `Signature message format` described below. Please note that the file must not contain any spaces (or other formatting) as this will result in a different signature.
+- Provide a version similar to `Signature message format` described below for the message. Please note that the file must not contain any spaces (or other formatting) as this will result in a different signature.
 - You will need the `Signature Hash` value for step 3
 
 
@@ -37,9 +40,9 @@ python -m ethstaker_deposit generate-bls-to-execution-change-keystore --keystore
 - After creating both signatures, create a json file using the validator index as the name such as `5426.json`
 - Put this file in the `signatures` folder
 - Review the `Signature file format` section below for the contents of the file
-- Use the `signature` created in step 1 for the keystore_signature
-- Use the returned `Signature Hash` from step 2 for the deposit_signature.
-- Create a pull request where the signatures will be automatically verified
+- Use the `signature` created in step 1 for the `keystore_signature`
+- Use the returned `Signature Hash` from step 2 for the `deposit_signature`.
+- Create a pull request after which the signatures will be automatically verified
 
 
 ### Keystore file format
@@ -67,7 +70,7 @@ As an example:
 
 
 ### Signature message format
-<div style="border: 1px solid #e74c3c; padding: 10px; background-color: #d9534f;">
+<div>
   <strong>⚠️ Alert:</strong> Ensure that the message does not contain any spaces or other formatting like newlines
 </div>
 
